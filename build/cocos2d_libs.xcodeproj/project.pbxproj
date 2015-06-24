@@ -1290,6 +1290,18 @@
 		38F526411A48363B000DB7F7 /* ArmatureNodeReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 38F5263C1A48363B000DB7F7 /* ArmatureNodeReader.h */; };
 		38F526421A48363B000DB7F7 /* CSArmatureNode_generated.h in Headers */ = {isa = PBXBuildFile; fileRef = 38F5263D1A48363B000DB7F7 /* CSArmatureNode_generated.h */; };
 		38F526431A48363B000DB7F7 /* CSArmatureNode_generated.h in Headers */ = {isa = PBXBuildFile; fileRef = 38F5263D1A48363B000DB7F7 /* CSArmatureNode_generated.h */; };
+		3A3185BD1ACC49CE0068312F /* Wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A3185BA1ACC49CE0068312F /* Wrapper.h */; };
+		3A3185BE1ACC49CE0068312F /* Wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A3185BA1ACC49CE0068312F /* Wrapper.h */; };
+		3A3185C01ACC49CE0068312F /* SIMD.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A3185BB1ACC49CE0068312F /* SIMD.h */; };
+		3A3185C21ACC49CE0068312F /* RNG.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A3185BC1ACC49CE0068312F /* RNG.h */; };
+		3A3185C51ACC4A930068312F /* CCParticleSystemQuadSIMD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A3185C31ACC4A930068312F /* CCParticleSystemQuadSIMD.cpp */; };
+		3A3185C61ACC4A930068312F /* CCParticleSystemQuadSIMD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A3185C31ACC4A930068312F /* CCParticleSystemQuadSIMD.cpp */; };
+		3A3185C71ACC4A930068312F /* CCParticleSystemQuadSIMD.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A3185C41ACC4A930068312F /* CCParticleSystemQuadSIMD.h */; };
+		3A3185C81ACC4A930068312F /* CCParticleSystemQuadSIMD.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A3185C41ACC4A930068312F /* CCParticleSystemQuadSIMD.h */; };
+		3A9D6F8A1AC98BE70078CE83 /* CCParticleSystemQuadSOA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A9D6F881AC98BE70078CE83 /* CCParticleSystemQuadSOA.cpp */; };
+		3A9D6F8B1AC98BE70078CE83 /* CCParticleSystemQuadSOA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A9D6F881AC98BE70078CE83 /* CCParticleSystemQuadSOA.cpp */; };
+		3A9D6F8C1AC98BE70078CE83 /* CCParticleSystemQuadSOA.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A9D6F891AC98BE70078CE83 /* CCParticleSystemQuadSOA.h */; };
+		3A9D6F8D1AC98BE70078CE83 /* CCParticleSystemQuadSOA.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A9D6F891AC98BE70078CE83 /* CCParticleSystemQuadSOA.h */; };
 		3E2BDADE19C030ED0055CDCD /* AudioEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = 3E2BDADD19C030ED0055CDCD /* AudioEngine.h */; };
 		3E2BDAEC19C0436F0055CDCD /* AudioEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3E2BDAEB19C0436F0055CDCD /* AudioEngine.cpp */; };
 		3E2F27A619CFBFE100E7C490 /* AudioEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3E2BDAEB19C0436F0055CDCD /* AudioEngine.cpp */; };
@@ -3119,6 +3131,13 @@
 		38F5263B1A48363B000DB7F7 /* ArmatureNodeReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ArmatureNodeReader.cpp; sourceTree = "<group>"; };
 		38F5263C1A48363B000DB7F7 /* ArmatureNodeReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArmatureNodeReader.h; sourceTree = "<group>"; };
 		38F5263D1A48363B000DB7F7 /* CSArmatureNode_generated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSArmatureNode_generated.h; sourceTree = "<group>"; };
+		3A3185BA1ACC49CE0068312F /* Wrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Wrapper.h; path = ../cocos/SIMD/Wrapper.h; sourceTree = "<group>"; };
+		3A3185BB1ACC49CE0068312F /* SIMD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SIMD.h; path = ../cocos/SIMD/SIMD.h; sourceTree = "<group>"; };
+		3A3185BC1ACC49CE0068312F /* RNG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RNG.h; path = ../cocos/SIMD/RNG.h; sourceTree = "<group>"; };
+		3A3185C31ACC4A930068312F /* CCParticleSystemQuadSIMD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCParticleSystemQuadSIMD.cpp; sourceTree = "<group>"; };
+		3A3185C41ACC4A930068312F /* CCParticleSystemQuadSIMD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCParticleSystemQuadSIMD.h; sourceTree = "<group>"; };
+		3A9D6F881AC98BE70078CE83 /* CCParticleSystemQuadSOA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCParticleSystemQuadSOA.cpp; sourceTree = "<group>"; };
+		3A9D6F891AC98BE70078CE83 /* CCParticleSystemQuadSOA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCParticleSystemQuadSOA.h; sourceTree = "<group>"; };
 		3E2BDADD19C030ED0055CDCD /* AudioEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioEngine.h; sourceTree = "<group>"; };
 		3E2BDAEB19C0436F0055CDCD /* AudioEngine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioEngine.cpp; sourceTree = "<group>"; };
 		3E6176551960F89B00DE83F5 /* CCController-iOS.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "CCController-iOS.mm"; path = "../base/CCController-iOS.mm"; sourceTree = "<group>"; };
@@ -4483,6 +4502,10 @@
 		1A570218180BCC000088DEC7 /* particle-nodes */ = {
 			isa = PBXGroup;
 			children = (
+				3A3185C31ACC4A930068312F /* CCParticleSystemQuadSIMD.cpp */,
+				3A3185C41ACC4A930068312F /* CCParticleSystemQuadSIMD.h */,
+				3A9D6F881AC98BE70078CE83 /* CCParticleSystemQuadSOA.cpp */,
+				3A9D6F891AC98BE70078CE83 /* CCParticleSystemQuadSOA.h */,
 				1A570219180BCC1A0088DEC7 /* CCParticleBatchNode.cpp */,
 				1A57021A180BCC1A0088DEC7 /* CCParticleBatchNode.h */,
 				1A57021B180BCC1A0088DEC7 /* CCParticleExamples.cpp */,
@@ -6894,6 +6917,7 @@
 				15AE189719AAD33D00C27E9E /* CCMenuItemImageLoader.h in Headers */,
 				B665E2001AA80A6500DDB1C5 /* CCPUAlignAffector.h in Headers */,
 				15AE189319AAD33D00C27E9E /* CCLayerGradientLoader.h in Headers */,
+				3A3185BD1ACC49CE0068312F /* Wrapper.h in Headers */,
 				B29A7DF919EE1B7700872B35 /* Json.h in Headers */,
 				15AE18EF19AAD35000C27E9E /* CCArmature.h in Headers */,
 				B665E3981AA80A6500DDB1C5 /* CCPUPointEmitter.h in Headers */,
@@ -6954,6 +6978,7 @@
 				B665E3AC1AA80A6500DDB1C5 /* CCPURandomiserTranslator.h in Headers */,
 				B665E2CC1AA80A6500DDB1C5 /* CCPUGravityAffectorTranslator.h in Headers */,
 				15AE189519AAD33D00C27E9E /* CCLayerLoader.h in Headers */,
+				3A9D6F8C1AC98BE70078CE83 /* CCParticleSystemQuadSOA.h in Headers */,
 				1A57028C180BCC900088DEC7 /* CCSpriteFrameCache.h in Headers */,
 				5027253A190BF1B900AAF4ED /* cocos2d.h in Headers */,
 				B665E3041AA80A6500DDB1C5 /* CCPUMeshSurfaceEmitter.h in Headers */,
@@ -7253,6 +7278,7 @@
 				50ABBDA91925AB4100A911A9 /* CCRenderCommand.h in Headers */,
 				50ABBD951925AB4100A911A9 /* CCGLProgramState.h in Headers */,
 				50ABC0091926664800A911A9 /* CCCommon.h in Headers */,
+				3A3185C71ACC4A930068312F /* CCParticleSystemQuadSIMD.h in Headers */,
 				50ABBE531925AB6F00A911A9 /* CCEventDispatcher.h in Headers */,
 				B29A7DEB19EE1B7700872B35 /* MeshAttachment.h in Headers */,
 				464AD6E7197EBB1400E502D8 /* pvr.h in Headers */,
@@ -7306,6 +7332,7 @@
 				292DB16219B461CA00A80320 /* ExtensionDeprecated.h in Headers */,
 				50ABBD961925AB4100A911A9 /* CCGLProgramState.h in Headers */,
 				46A171061807CECB005B8026 /* CCPhysicsWorld.h in Headers */,
+				3A3185BE1ACC49CE0068312F /* Wrapper.h in Headers */,
 				50ABBDB41925AB4100A911A9 /* ccShaders.h in Headers */,
 				15AE19B319AAD39700C27E9E /* SliderReader.h in Headers */,
 				15AE1B7919AADA9A00C27E9E /* UIRichText.h in Headers */,
@@ -7352,6 +7379,7 @@
 				503DD8EC1926736A00CD74DD /* CCGLViewImpl-ios.h in Headers */,
 				15AE18D819AAD33D00C27E9E /* CCScrollViewLoader.h in Headers */,
 				15AE18DB19AAD33D00C27E9E /* CocosBuilder.h in Headers */,
+				3A3185C81ACC4A930068312F /* CCParticleSystemQuadSIMD.h in Headers */,
 				B665E1F51AA80A6500DDB1C5 /* CCPUAffector.h in Headers */,
 				15AE1ACD19AAD40300C27E9E /* b2PrismaticJoint.h in Headers */,
 				50ABBEBA1925AB6F00A911A9 /* ccUTF8.h in Headers */,
@@ -7405,6 +7433,7 @@
 				15AE192F19AAD35100C27E9E /* CCActionFrameEasing.h in Headers */,
 				1A570084180BC5A10088DEC7 /* CCActionManager.h in Headers */,
 				B665E3151AA80A6500DDB1C5 /* CCPUObserverManager.h in Headers */,
+				3A9D6F8D1AC98BE70078CE83 /* CCParticleSystemQuadSOA.h in Headers */,
 				15AE18C619AAD33D00C27E9E /* CCLayerLoader.h in Headers */,
 				B665E2C51AA80A6500DDB1C5 /* CCPUGeometryRotatorTranslator.h in Headers */,
 				50ABC0141926664800A911A9 /* CCGLView.h in Headers */,
@@ -7655,6 +7684,7 @@
 				B665E2351AA80A6500DDB1C5 /* CCPUBoxEmitter.h in Headers */,
 				15AE1B7519AADA9A00C27E9E /* UILoadingBar.h in Headers */,
 				15AE1BF219AAE01E00C27E9E /* CCControlPotentiometer.h in Headers */,
+				3A3185C21ACC49CE0068312F /* RNG.h in Headers */,
 				15AE1BEB19AAE01E00C27E9E /* CCControlButton.h in Headers */,
 				B665E35D1AA80A6500DDB1C5 /* CCPUOnRandomObserver.h in Headers */,
 				1A570281180BCC900088DEC7 /* CCSprite.h in Headers */,
@@ -7708,6 +7738,7 @@
 				15AE18AC19AAD33D00C27E9E /* CCBAnimationManager.h in Headers */,
 				292DB14219B4574100A80320 /* UIEditBoxImpl.h in Headers */,
 				1A570303180BCE890088DEC7 /* CCParallaxNode.h in Headers */,
+				3A3185C01ACC49CE0068312F /* SIMD.h in Headers */,
 				50ABBE2A1925AB6F00A911A9 /* CCAutoreleasePool.h in Headers */,
 				1A57030F180BCF190088DEC7 /* CCComponent.h in Headers */,
 				B665E22D1AA80A6500DDB1C5 /* CCPUBoxCollider.h in Headers */,
@@ -8188,6 +8219,7 @@
 				15AE181019AAD2F700C27E9E /* CCAnimation3D.cpp in Sources */,
 				1A01C68418F57BE800EFE3A6 /* CCArray.cpp in Sources */,
 				1A570112180BC8EE0088DEC7 /* CCDrawNode.cpp in Sources */,
+				3A3185C51ACC4A930068312F /* CCParticleSystemQuadSIMD.cpp in Sources */,
 				15AE186D19AAD31D00C27E9E /* SimpleAudioEngine_objc.m in Sources */,
 				1A57011B180BC90D0088DEC7 /* CCGrabber.cpp in Sources */,
 				B29A7E3719EE1B7700872B35 /* AnimationStateData.c in Sources */,
@@ -8332,6 +8364,7 @@
 				50ABC0191926664800A911A9 /* CCSAXParser.cpp in Sources */,
 				15AE189219AAD33D00C27E9E /* CCLayerGradientLoader.cpp in Sources */,
 				15AE1B6A19AADA9900C27E9E /* UIDeprecated.cpp in Sources */,
+				3A9D6F8A1AC98BE70078CE83 /* CCParticleSystemQuadSOA.cpp in Sources */,
 				15AE183C19AAD2F700C27E9E /* CCSkeleton3D.cpp in Sources */,
 				15AE1A2319AAD3D500C27E9E /* b2BroadPhase.cpp in Sources */,
 				382384211A2590DA002C4610 /* GameMapReader.cpp in Sources */,
@@ -8912,6 +8945,7 @@
 				B665E4171AA80A6600DDB1C5 /* CCPUTextureAnimatorTranslator.cpp in Sources */,
 				B665E34B1AA80A6500DDB1C5 /* CCPUOnPositionObserver.cpp in Sources */,
 				15AE1AD619AAD40300C27E9E /* b2WheelJoint.cpp in Sources */,
+				3A9D6F8B1AC98BE70078CE83 /* CCParticleSystemQuadSOA.cpp in Sources */,
 				299754F5193EC95400A54AC3 /* ObjectFactory.cpp in Sources */,
 				1A5701DF180BCB8C0088DEC7 /* CCLayer.cpp in Sources */,
 				B29A7DEA19EE1B7700872B35 /* EventData.c in Sources */,
@@ -8998,6 +9032,7 @@
 				B29A7DD819EE1B7700872B35 /* SkeletonData.c in Sources */,
 				1A57027F180BCC900088DEC7 /* CCSprite.cpp in Sources */,
 				B665E24F1AA80A6500DDB1C5 /* CCPUColorAffectorTranslator.cpp in Sources */,
+				3A3185C61ACC4A930068312F /* CCParticleSystemQuadSIMD.cpp in Sources */,
 				15AE194719AAD35100C27E9E /* CCComAudio.cpp in Sources */,
 				15AE192719AAD35100C27E9E /* TriggerBase.cpp in Sources */,
 				15AE1B8819AADA9A00C27E9E /* UICheckBox.cpp in Sources */,

@@ -54,6 +54,7 @@ THE SOFTWARE.
 #include "renderer/CCTextureCache.h"
 #include "deprecated/CCString.h"
 #include "platform/CCFileUtils.h"
+#include "base/CCProfiling.h"
 
 using namespace std;
 
@@ -80,6 +81,7 @@ NS_CC_BEGIN
 ParticleSystem::ParticleSystem()
 : _isBlendAdditive(false)
 , _isAutoRemoveOnFinish(false)
+, _haveRotate(false)
 , _plistFile("")
 , _elapsed(0)
 , _particles(nullptr)
@@ -260,6 +262,9 @@ bool ParticleSystem::initWithDictionary(ValueMap& dictionary, const std::string&
             // Spinning
             _startSpin = dictionary["rotationStart"].asFloat();
             _startSpinVar = dictionary["rotationStartVariance"].asFloat();
+            
+            _haveRotate = (_startSpin != 0.0f || _startSpinVar != 0.0f);
+            
             _endSpin= dictionary["rotationEnd"].asFloat();
             _endSpinVar= dictionary["rotationEndVariance"].asFloat();
 

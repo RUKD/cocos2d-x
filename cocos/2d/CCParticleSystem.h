@@ -198,18 +198,18 @@ public:
      * @return True if add success.
      * @js ctor
      */
-    bool addParticle();
+    virtual bool addParticle();
     /** Initializes a particle.
      * 
      * @param particle A given particle pointer.
      */
-    void initParticle(tParticle* particle);
+    virtual void initParticle(tParticle* particle);
     /** Stop emitting particles. Running particles will continue to run until they die.
      */
     void stopSystem();
     /** Kill all living particles.
      */
-    void resetSystem();
+    virtual void resetSystem();
     /** Whether or not the system is full.
      *
      * @return True if the system is full.
@@ -767,6 +767,7 @@ protected:
      @since v0.8
      */
     bool _isAutoRemoveOnFinish;
+    bool _haveRotate;
 
     std::string _plistFile;
     //! time elapsed since the start of the system (in seconds)

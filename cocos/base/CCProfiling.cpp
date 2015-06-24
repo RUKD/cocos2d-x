@@ -33,7 +33,7 @@ NS_CC_BEGIN
 /* set to false the categories that you don't want to profile */
 bool kProfilerCategorySprite = false;
 bool kProfilerCategoryBatchSprite = false;
-bool kProfilerCategoryParticles = false;
+bool kProfilerCategoryParticles = true;
 
 
 static Profiler* g_sSharedProfiler = nullptr;
@@ -168,6 +168,7 @@ void ProfilingEndTimingBlock(const char *timerName)
     timer->_averageTime2 = timer->totalTime / timer->numberOfCalls;
     timer->maxTime = MAX( timer->maxTime, duration);
     timer->minTime = MIN( timer->minTime, duration);
+    printf("%s\n",timer->getDescription().c_str());
 }
 
 void ProfilingResetTimingBlock(const char *timerName)
