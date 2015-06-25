@@ -45,7 +45,7 @@ namespace Myst
     const Myst::Vector128 cVectorSign((int)0x80000000);
     
     
-#define TAG_PRESTIGE_ITERATERANGE(range, NORMAL_STATEMENTS, BOUNDARY_STATEMENTS)\
+#define SIMD_ITERATERANGE(range, NORMAL_STATEMENTS, BOUNDARY_STATEMENTS)\
     {\
         const size_t head = range.start & 3;\
         const size_t tail = range.end & 3;\
@@ -365,37 +365,8 @@ namespace Myst
         intg =  VectorConvertF32_I32(v);
         Vector128 f  = VectorConvertI32_F32(intg);
         frac    = VectorSub(v,f);
-//#if MYST_SIMD_PLATFORM == MYST_SIMD_PLATFORM_SSE
-//        __m128i v0 = _mm_setzero_si128();
-//        __m128i v1 = _mm_cmpeq_epi32(v0, v0);
-//        __m128i ji = _mm_srli_epi32(v1, 25);
-//        Vector128 j = _mm_slli_epi32(ji, 23);
-//        intg = _mm_cvttps_epi32(v.v);
-//        __m128 f = _mm_cvtepi32_ps(intg.vi);
-//        frac = _mm_sub_ps(v.v, f);
-//#elif MYST_SIMD_PLATFORM == MYST_SIMD_PLATFORM_NEON
-//        __m128i v0 = _mm_setzero_si128();
-//        __m128i v1 = _mm_cmpeq_epi32(v0, v0);
-//        __m128i ji = _mm_srli_epi32(v1, 25);
-//        Vector128 j = _mm_slli_epi32(ji, 23);
-//        intg = _mm_cvttps_epi32(v.v);
-//        __m128 f = _mm_cvtepi32_ps(intg.vi);
-//        frac = _mm_sub_ps(v.v, f);
-//#else
-//#endif
-        
-       
     }
     
-//    inline Vector128 VectorFToI(const Vector128& v)
-//    {
-//#if MYST_SIMD_PLATFORM == MYST_SIMD_PLATFORM_SSE
-//
-//        return _mm_cvttps_epi32(v.v);
-//#else
-//        return Vector128::Int128((int)v.f[0],(int)v.f[1],(int)v.f[2],(int)v.f[3]);
-//#endif
-//    }
     
     inline int VectorGetMask(const Vector128& v)
     {

@@ -15,12 +15,6 @@
 
 
 
-#define MYST_SIMD_NAME "SSE"
-#define MYST_SIMD_VERSION 50
-#define USE_INTRINSICS 1
-
-
-
 #define MYST_SIMD_PLATFORM_NONE     0
 #define MYST_SIMD_PLATFORM_SSE      1
 #define MYST_SIMD_PLATFORM_NEON     2

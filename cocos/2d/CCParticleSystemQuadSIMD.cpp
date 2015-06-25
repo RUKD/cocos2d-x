@@ -1,18 +1,10 @@
-//
-//  CCParticleSystemQuadSIMD.cpp
-//  cocos2d_libs
-//
-//  Created by RUKD on 15/3/30.
-//
-//
-
-
 /****************************************************************************
  Copyright (c) 2008-2010 Ricardo Quesada
  Copyright (c) 2009      Leonardo Kasperavičius
  Copyright (c) 2010-2012 cocos2d-x.org
  Copyright (c) 2011      Zynga Inc.
  Copyright (c) 2013-2014 Chukong Technologies Inc.
+ Copyright (c) 2015      RUKD
  
  http://www.cocos2d-x.org
  
@@ -67,10 +59,85 @@ struct SizeRange
     size_t end;
 };
 
+ParticleDataSOA::ParticleDataSOA()
+{
+    memset(this, 0, sizeof(ParticleDataSOA));
+}
+
+bool ParticleDataSOA::init(int count)
+{
+    maxCount = count;
+    
+    posx= (float*)malloc(count * sizeof(float));
+    posy= (float*)malloc(count * sizeof(float));
+    startPosX= (float*)malloc(count * sizeof(float));
+    startPosY= (float*)malloc(count * sizeof(float));
+    colorR= (float*)malloc(count * sizeof(float));
+    colorG= (float*)malloc(count * sizeof(float));
+    colorB= (float*)malloc(count * sizeof(float));
+    colorA= (float*)malloc(count * sizeof(float));
+    deltaColorR= (float*)malloc(count * sizeof(float));
+    deltaColorG= (float*)malloc(count * sizeof(float));
+    deltaColorB= (float*)malloc(count * sizeof(float));
+    deltaColorA= (float*)malloc(count * sizeof(float));
+    size= (float*)malloc(count * sizeof(float));
+    deltaSize= (float*)malloc(count * sizeof(float));
+    rotation= (float*)malloc(count * sizeof(float));
+    deltaRotation= (float*)malloc(count * sizeof(float));
+    timeToLive= (float*)malloc(count * sizeof(float));
+    atlasIndex= (unsigned int*)malloc(count * sizeof(unsigned int));
+    
+    modeA.dirX= (float*)malloc(count * sizeof(float));
+    modeA.dirY= (float*)malloc(count * sizeof(float));
+    modeA.radialAccel= (float*)malloc(count * sizeof(float));
+    modeA.tangentialAccel= (float*)malloc(count * sizeof(float));
+    
+    modeB.angle= (float*)malloc(count * sizeof(float));
+    modeB.degreesPerSecond= (float*)malloc(count * sizeof(float));
+    modeB.deltaRadius= (float*)malloc(count * sizeof(float));
+    modeB.radius= (float*)malloc(count * sizeof(float));
+    
+    return posx && posy && startPosY && startPosX && colorR && colorG && colorB && colorA &&
+    deltaColorR && deltaColorG && deltaColorB && deltaColorA && size && deltaSize &&
+    rotation && deltaRotation && timeToLive && atlasIndex && modeA.dirX && modeA.dirY &&
+    modeA.radialAccel && modeA.tangentialAccel && modeB.angle && modeB.degreesPerSecond &&
+    modeB.deltaRadius && modeB.radius;
+}
+
+void ParticleDataSOA::release()
+{
+    CC_SAFE_FREE(posx);
+    CC_SAFE_FREE(posy);
+    CC_SAFE_FREE(startPosX);
+    CC_SAFE_FREE(startPosY);
+    CC_SAFE_FREE(colorR);
+    CC_SAFE_FREE(colorG);
+    CC_SAFE_FREE(colorB);
+    CC_SAFE_FREE(colorA);
+    CC_SAFE_FREE(deltaColorR);
+    CC_SAFE_FREE(deltaColorG);
+    CC_SAFE_FREE(deltaColorB);
+    CC_SAFE_FREE(deltaColorA);
+    CC_SAFE_FREE(size);
+    CC_SAFE_FREE(deltaSize);
+    CC_SAFE_FREE(rotation);
+    CC_SAFE_FREE(deltaRotation);
+    CC_SAFE_FREE(timeToLive);
+    CC_SAFE_FREE(atlasIndex);
+    
+    CC_SAFE_FREE(modeA.dirX);
+    CC_SAFE_FREE(modeA.dirY);
+    CC_SAFE_FREE(modeA.radialAccel);
+    CC_SAFE_FREE(modeA.tangentialAccel);
+    
+    CC_SAFE_FREE(modeB.angle);
+    CC_SAFE_FREE(modeB.degreesPerSecond);
+    CC_SAFE_FREE(modeB.deltaRadius);
+    CC_SAFE_FREE(modeB.radius);
+}
+
 ParticleSystemQuadSIMD::ParticleSystemQuadSIMD()
-:_quads(nullptr)
-,_indices(nullptr)
-,_VAOname(0)
+:ParticleSystemQuad()
 {
     memset(_buffersVBO, 0, sizeof(_buffersVBO));
 }
@@ -212,15 +279,7 @@ bool ParticleSystemQuadSIMD::initWithTotalParticles(int numberOfParticles)
 bool ParticleSystemQuadSIMD::addParticle()
 {
     assert("0&&should never call");
-    if (this->isFull())
-    {
-        return false;
-    }
-    
-    initParticleByIndex(_particleCount);
-    ++_particleCount;
-    
-    return true;
+    return false;
 }
 
 inline void updateValueInRange(float* v , SizeRange& range , float start , float endd, LCG& lcg)
@@ -238,7 +297,7 @@ inline void updateValueInRange(float* v , SizeRange& range , float start , float
     temp = I32ToFloatRange(lcg.Next(), start128, range128);\
     xx[i] = VectorSelect(xx[i],temp,boundaryMask);
     
-    TAG_PRESTIGE_ITERATERANGE(range, NORMAL_STATEMENTS, BOUNDARY_STATEMENTS);
+    SIMD_ITERATERANGE(range, NORMAL_STATEMENTS, BOUNDARY_STATEMENTS);
     
 #undef NORMAL_STATEMENTS
 #undef BOUNDARY_STATEMENTS
@@ -261,7 +320,7 @@ inline void updateDeltaValueInRange(float* v,float* dv,float* t,SizeRange& range
     temp = VectorDiv( VectorSub( I32ToFloatRange(lcg.Next(), start128, range128) , vv[i] ) , tt[i] );\
     dvv[i] = VectorSelect(dvv[i],temp,boundaryMask);
     
-    TAG_PRESTIGE_ITERATERANGE(range, NORMAL_STATEMENTS, BOUNDARY_STATEMENTS);
+    SIMD_ITERATERANGE(range, NORMAL_STATEMENTS, BOUNDARY_STATEMENTS);
     
 #undef NORMAL_STATEMENTS
 #undef BOUNDARY_STATEMENTS
@@ -278,7 +337,7 @@ inline void setConstValue(float* v , float constV,SizeRange& range)
 #define BOUNDARY_STATEMENTS(i, boundaryMask) \
     vv[i] = VectorSelect(vv[i],constVV,boundaryMask);
     
-    TAG_PRESTIGE_ITERATERANGE(range, NORMAL_STATEMENTS, BOUNDARY_STATEMENTS);
+    SIMD_ITERATERANGE(range, NORMAL_STATEMENTS, BOUNDARY_STATEMENTS);
     
 #undef NORMAL_STATEMENTS
 #undef BOUNDARY_STATEMENTS
@@ -286,13 +345,6 @@ inline void setConstValue(float* v , float constV,SizeRange& range)
 
 inline void updateDirValue(float* x,float*y,SizeRange& range , float startAngle,float endAngle , float startSpeed,float endSpeed,LCG& lcg)
 {
-//    float a = CC_DEGREES_TO_RADIANS( _angle + _angleVar * CCRANDOM_MINUS1_1() );
-//    Vec2 v(cosf( a ), sinf( a ));
-//    float s = modeA.speed + modeA.speedVar * CCRANDOM_MINUS1_1();
-//    Vec2 dir = v * s;
-//    mParticleData.modeA.dirX[i] = dir.x;//v * s ;
-//    mParticleData.modeA.dirY[i] = dir.y;
-//    mParticleData.rotation[i] = -CC_RADIANS_TO_DEGREES(dir.getAngle());
     
     Vector128* xx = (Vector128*)x;
     Vector128* yy = (Vector128*)y;
@@ -324,7 +376,7 @@ inline void updateDirValue(float* x,float*y,SizeRange& range , float startAngle,
     xx[i] = VectorSelect(xx[i],tempX,boundaryMask);\
     yy[i] = VectorSelect(yy[i],tempY,boundaryMask);
     
-    TAG_PRESTIGE_ITERATERANGE(range, NORMAL_STATEMENTS, BOUNDARY_STATEMENTS);
+    SIMD_ITERATERANGE(range, NORMAL_STATEMENTS, BOUNDARY_STATEMENTS);
     
 #undef NORMAL_STATEMENTS
 #undef BOUNDARY_STATEMENTS
@@ -447,30 +499,11 @@ bool ParticleSystemQuadSIMD::addParticles(int count)
             updateDirValue(mParticleData.modeA.dirX,mParticleData.modeA.dirY,range,
                            CC_DEGREES_TO_RADIANS(_angle-_angleVar) , CC_DEGREES_TO_RADIANS(_angle + _angleVar),
                            modeA.speed - modeA.speedVar , modeA.speed + modeA.speedVar,lcg);
-//            for (int i = start; i < _particleCount; ++i)
-//            {
-//                float a = CC_DEGREES_TO_RADIANS( _angle + _angleVar * CCRANDOM_MINUS1_1() );
-//                Vec2 v(cosf( a ), sinf( a ));
-//                float s = modeA.speed + modeA.speedVar * CCRANDOM_MINUS1_1();
-//                Vec2 dir = v * s;
-//                mParticleData.modeA.dirX[i] = dir.x;//v * s ;
-//                mParticleData.modeA.dirY[i] = dir.y;
-//                mParticleData.rotation[i] = -CC_RADIANS_TO_DEGREES(dir.getAngle());
-//            }
         }else
         {
             updateDirValue(mParticleData.modeA.dirX,mParticleData.modeA.dirY,range,
                            CC_DEGREES_TO_RADIANS(_angle-_angleVar) , CC_DEGREES_TO_RADIANS(_angle + _angleVar),
                            modeA.speed - modeA.speedVar , modeA.speed + modeA.speedVar,lcg);
-//            for (int i = start; i < _particleCount; ++i)
-//            {
-//                float a = CC_DEGREES_TO_RADIANS( _angle + _angleVar * CCRANDOM_MINUS1_1() );
-//                Vec2 v(cosf( a ), sinf( a ));
-//                float s = modeA.speed + modeA.speedVar * CCRANDOM_MINUS1_1();
-//                Vec2 dir = v * s;
-//                mParticleData.modeA.dirX[i] = dir.x;//v * s ;
-//                mParticleData.modeA.dirY[i] = dir.y;
-//            }
         }
         
     }
@@ -653,7 +686,7 @@ inline void updateLifeTime(float* lifeTime , SizeRange& range , float deltaTime)
     temp = VectorAdd(rLife[i],dT);\
     rLife[i] = VectorSelect(rLife[i],temp,boundaryMask);
     
-    TAG_PRESTIGE_ITERATERANGE(range, NORMAL_STATEMENTS, BOUNDARY_STATEMENTS);
+    SIMD_ITERATERANGE(range, NORMAL_STATEMENTS, BOUNDARY_STATEMENTS);
     
 #undef NORMAL_STATEMENTS
 #undef BOUNDARY_STATEMENTS
@@ -675,7 +708,7 @@ inline void updateAddDeltaMultTime(float* value,float* deltaValue,SizeRange& ran
     temp = VectorAdd(v[i],VectorMul(dv[i], dT));\
     v[i] = VectorSelect(v[i],temp,boundaryMask);
     
-    TAG_PRESTIGE_ITERATERANGE(range, NORMAL_STATEMENTS, BOUNDARY_STATEMENTS);
+    SIMD_ITERATERANGE(range, NORMAL_STATEMENTS, BOUNDARY_STATEMENTS);
     
 #undef NORMAL_STATEMENTS
 #undef BOUNDARY_STATEMENTS
@@ -781,7 +814,7 @@ inline void updateModeADir(float* dx,float* dy,float* x,float* y,float* radialAc
         dYY[i] = VectorSelect(dYY[i],tempY,boundaryMask);
         
         
-        TAG_PRESTIGE_ITERATERANGE(range, NORMAL_STATEMENTS, BOUNDARY_STATEMENTS);
+        SIMD_ITERATERANGE(range, NORMAL_STATEMENTS, BOUNDARY_STATEMENTS);
         
 #undef NORMAL_STATEMENTS
 #undef BOUNDARY_STATEMENTS
@@ -804,7 +837,7 @@ inline void updateModeADir(float* dx,float* dy,float* x,float* y,float* radialAc
     dYY[i] = VectorSelect(dYY[i],tempY,boundaryMask);
     
     
-    TAG_PRESTIGE_ITERATERANGE(range, NORMAL_STATEMENTS, BOUNDARY_STATEMENTS);
+    SIMD_ITERATERANGE(range, NORMAL_STATEMENTS, BOUNDARY_STATEMENTS);
     
 #undef NORMAL_STATEMENTS
 #undef BOUNDARY_STATEMENTS
@@ -1484,228 +1517,13 @@ void ParticleSystemQuadSIMD::updateVertexData()
 }
 
 // pointRect should be in Texture coordinates, not pixel coordinates
-void ParticleSystemQuadSIMD::initTexCoordsWithRect(const Rect& pointRect)
-{
-    // convert to Tex coords
-    
-    Rect rect = Rect(
-                     pointRect.origin.x * CC_CONTENT_SCALE_FACTOR(),
-                     pointRect.origin.y * CC_CONTENT_SCALE_FACTOR(),
-                     pointRect.size.width * CC_CONTENT_SCALE_FACTOR(),
-                     pointRect.size.height * CC_CONTENT_SCALE_FACTOR());
-    
-    GLfloat wide = (GLfloat) pointRect.size.width;
-    GLfloat high = (GLfloat) pointRect.size.height;
-    
-    if (_texture)
-    {
-        wide = (GLfloat)_texture->getPixelsWide();
-        high = (GLfloat)_texture->getPixelsHigh();
-    }
-    
-#if CC_FIX_ARTIFACTS_BY_STRECHING_TEXEL
-    GLfloat left = (rect.origin.x*2+1) / (wide*2);
-    GLfloat bottom = (rect.origin.y*2+1) / (high*2);
-    GLfloat right = left + (rect.size.width*2-2) / (wide*2);
-    GLfloat top = bottom + (rect.size.height*2-2) / (high*2);
-#else
-    GLfloat left = rect.origin.x / wide;
-    GLfloat bottom = rect.origin.y / high;
-    GLfloat right = left + rect.size.width / wide;
-    GLfloat top = bottom + rect.size.height / high;
-#endif // ! CC_FIX_ARTIFACTS_BY_STRECHING_TEXEL
-    
-    // Important. Texture in cocos2d are inverted, so the Y component should be inverted
-    std::swap(top, bottom);
-    
-    V3F_C4B_T2F_Quad *quads = nullptr;
-    unsigned int start = 0, end = 0;
-    if (_batchNode)
-    {
-        quads = _batchNode->getTextureAtlas()->getQuads();
-        start = _atlasIndex;
-        end = _atlasIndex + _totalParticles;
-    }
-    else
-    {
-        quads = _quads;
-        start = 0;
-        end = _totalParticles;
-    }
-    
-    for(unsigned int i=start; i<end; i++)
-    {
-        // bottom-left vertex:
-        quads[i].bl.texCoords.u = left;
-        quads[i].bl.texCoords.v = bottom;
-        // bottom-right vertex:
-        quads[i].br.texCoords.u = right;
-        quads[i].br.texCoords.v = bottom;
-        // top-left vertex:
-        quads[i].tl.texCoords.u = left;
-        quads[i].tl.texCoords.v = top;
-        // top-right vertex:
-        quads[i].tr.texCoords.u = right;
-        quads[i].tr.texCoords.v = top;
-    }
-}
 
-void ParticleSystemQuadSIMD::updateTexCoords()
-{
-    if (_texture)
-    {
-        const Size& s = _texture->getContentSize();
-        initTexCoordsWithRect(Rect(0, 0, s.width, s.height));
-    }
-}
-
-void ParticleSystemQuadSIMD::setTextureWithRect(Texture2D *texture, const Rect& rect)
-{
-    // Only update the texture if is different from the current one
-    if( !_texture || texture->getName() != _texture->getName() )
-    {
-        ParticleSystem::setTexture(texture);
-    }
-    
-    this->initTexCoordsWithRect(rect);
-}
-
-void ParticleSystemQuadSIMD::setTexture(Texture2D* texture)
-{
-    const Size& s = texture->getContentSize();
-    this->setTextureWithRect(texture, Rect(0, 0, s.width, s.height));
-}
-
-void ParticleSystemQuadSIMD::setDisplayFrame(SpriteFrame *spriteFrame)
-{
-    CCASSERT(spriteFrame->getOffsetInPixels().equals(Vec2::ZERO),
-             "QuadParticle only supports SpriteFrames with no offsets");
-    
-    // update texture before updating texture rect
-    if ( !_texture || spriteFrame->getTexture()->getName() != _texture->getName())
-    {
-        this->setTexture(spriteFrame->getTexture());
-    }
-}
-
-void ParticleSystemQuadSIMD::initIndices()
-{
-    for(int i = 0; i < _totalParticles; ++i)
-    {
-        const unsigned int i6 = i*6;
-        const unsigned int i4 = i*4;
-        _indices[i6+0] = (GLushort) i4+0;
-        _indices[i6+1] = (GLushort) i4+1;
-        _indices[i6+2] = (GLushort) i4+2;
-        
-        _indices[i6+5] = (GLushort) i4+1;
-        _indices[i6+4] = (GLushort) i4+2;
-        _indices[i6+3] = (GLushort) i4+3;
-    }
-}
 
 void ParticleSystemQuadSIMD::updateQuadWithParticle(tParticle* particle, const Vec2& newPosition)
 {
     assert(0&&"no need call");
-//    V3F_C4B_T2F_Quad *quad;
-//    
-//    if (_batchNode)
-//    {
-//        V3F_C4B_T2F_Quad *batchQuads = _batchNode->getTextureAtlas()->getQuads();
-//        quad = &(batchQuads[_atlasIndex+particle->atlasIndex]);
-//    }
-//    else
-//    {
-//        quad = &(_quads[_particleIdx]);
-//    }
-//    Color4B color = (_opacityModifyRGB)
-//    ? Color4B( particle->color.r*particle->color.a*255, particle->color.g*particle->color.a*255, particle->color.b*particle->color.a*255, particle->color.a*255)
-//    : Color4B( particle->color.r*255, particle->color.g*255, particle->color.b*255, particle->color.a*255);
-//    
-//    quad->bl.colors = color;
-//    quad->br.colors = color;
-//    quad->tl.colors = color;
-//    quad->tr.colors = color;
-//    
-//    // vertices
-//    GLfloat size_2 = particle->size/2;
-//    if (particle->rotation)
-//    {
-//        GLfloat x1 = -size_2;
-//        GLfloat y1 = -size_2;
-//        
-//        GLfloat x2 = size_2;
-//        GLfloat y2 = size_2;
-//        GLfloat x = newPosition.x;
-//        GLfloat y = newPosition.y;
-//        
-//        GLfloat r = (GLfloat)-CC_DEGREES_TO_RADIANS(particle->rotation);
-//        GLfloat cr = cosf(r);
-//        GLfloat sr = sinf(r);
-//        GLfloat ax = x1 * cr - y1 * sr + x;
-//        GLfloat ay = x1 * sr + y1 * cr + y;
-//        GLfloat bx = x2 * cr - y1 * sr + x;
-//        GLfloat by = x2 * sr + y1 * cr + y;
-//        GLfloat cx = x2 * cr - y2 * sr + x;
-//        GLfloat cy = x2 * sr + y2 * cr + y;
-//        GLfloat dx = x1 * cr - y2 * sr + x;
-//        GLfloat dy = x1 * sr + y2 * cr + y;
-//        
-//        // bottom-left
-//        quad->bl.vertices.x = ax;
-//        quad->bl.vertices.y = ay;
-//        
-//        // bottom-right vertex:
-//        quad->br.vertices.x = bx;
-//        quad->br.vertices.y = by;
-//        
-//        // top-left vertex:
-//        quad->tl.vertices.x = dx;
-//        quad->tl.vertices.y = dy;
-//        
-//        // top-right vertex:
-//        quad->tr.vertices.x = cx;
-//        quad->tr.vertices.y = cy;
-//    }
-//    else
-//    {
-//        // bottom-left vertex:
-//        quad->bl.vertices.x = newPosition.x - size_2;
-//        quad->bl.vertices.y = newPosition.y - size_2;
-//        
-//        // bottom-right vertex:
-//        quad->br.vertices.x = newPosition.x + size_2;
-//        quad->br.vertices.y = newPosition.y - size_2;
-//        
-//        // top-left vertex:
-//        quad->tl.vertices.x = newPosition.x - size_2;
-//        quad->tl.vertices.y = newPosition.y + size_2;
-//        
-//        // top-right vertex:
-//        quad->tr.vertices.x = newPosition.x + size_2;
-//        quad->tr.vertices.y = newPosition.y + size_2;
-//    }
 }
-void ParticleSystemQuadSIMD::postStep()
-{
-    glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
-    
-    // Option 1: Sub Data
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(_quads[0])*_totalParticles, _quads);
-    
-    // Option 2: Data
-    //  glBufferData(GL_ARRAY_BUFFER, sizeof(quads_[0]) * particleCount, quads_, GL_DYNAMIC_DRAW);
-    
-    // Option 3: Orphaning + glMapBuffer
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0])*_totalParticles, nullptr, GL_STREAM_DRAW);
-    // void *buf = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-    // memcpy(buf, _quads, sizeof(_quads[0])*_totalParticles);
-    // glUnmapBuffer(GL_ARRAY_BUFFER);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    
-    CHECK_GL_ERROR_DEBUG();
-}
+
 
 // overriding draw method
 void ParticleSystemQuadSIMD::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
@@ -1801,103 +1619,7 @@ void ParticleSystemQuadSIMD::setTotalParticles(int tp)
     resetSystem();
 }
 
-void ParticleSystemQuadSIMD::setupVBOandVAO()
-{
-    // clean VAO
-    glDeleteBuffers(2, &_buffersVBO[0]);
-    glDeleteVertexArrays(1, &_VAOname);
-    GL::bindVAO(0);
-    
-    glGenVertexArrays(1, &_VAOname);
-    GL::bindVAO(_VAOname);
-    
-#define kQuadSize sizeof(_quads[0].bl)
-    
-    glGenBuffers(2, &_buffersVBO[0]);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0]) * _totalParticles, _quads, GL_DYNAMIC_DRAW);
-    
-    // vertices
-    glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_POSITION);
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, kQuadSize, (GLvoid*) offsetof( V3F_C4B_T2F, vertices));
-    
-    // colors
-    glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_COLOR);
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, kQuadSize, (GLvoid*) offsetof( V3F_C4B_T2F, colors));
-    
-    // tex coords
-    glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_TEX_COORD);
-    glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, kQuadSize, (GLvoid*) offsetof( V3F_C4B_T2F, texCoords));
-    
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * _totalParticles * 6, _indices, GL_STATIC_DRAW);
-    
-    // Must unbind the VAO before changing the element buffer.
-    GL::bindVAO(0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    
-    CHECK_GL_ERROR_DEBUG();
-}
 
-void ParticleSystemQuadSIMD::setupVBO()
-{
-    glDeleteBuffers(2, &_buffersVBO[0]);
-    
-    glGenBuffers(2, &_buffersVBO[0]);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0]) * _totalParticles, _quads, GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * _totalParticles * 6, _indices, GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    
-    CHECK_GL_ERROR_DEBUG();
-}
-
-void ParticleSystemQuadSIMD::listenRendererRecreated(EventCustom* event)
-{
-    //when comes to foreground in android, _buffersVBO and _VAOname is a wild handle
-    //before recreating, we need to reset them to 0
-    memset(_buffersVBO, 0, sizeof(_buffersVBO));
-    if (Configuration::getInstance()->supportsShareableVAO())
-    {
-        _VAOname = 0;
-        setupVBOandVAO();
-    }
-    else
-    {
-        setupVBO();
-    }
-}
-
-bool ParticleSystemQuadSIMD::allocMemory()
-{
-    CCASSERT( !_batchNode, "Memory should not be alloced when not using batchNode");
-    
-    CC_SAFE_FREE(_quads);
-    CC_SAFE_FREE(_indices);
-    
-    _quads = (V3F_C4B_T2F_Quad*)malloc(_totalParticles * sizeof(V3F_C4B_T2F_Quad));
-    _indices = (GLushort*)malloc(_totalParticles * 6 * sizeof(GLushort));
-    
-    if( !_quads || !_indices)
-    {
-        CCLOG("cocos2d: Particle system: not enough memory");
-        CC_SAFE_FREE(_quads);
-        CC_SAFE_FREE(_indices);
-        
-        return false;
-    }
-    
-    memset(_quads, 0, _totalParticles * sizeof(V3F_C4B_T2F_Quad));
-    memset(_indices, 0, _totalParticles * 6 * sizeof(GLushort));
-    
-    return true;
-}
 
 void ParticleSystemQuadSIMD::setBatchNode(ParticleBatchNode * batchNode)
 {
